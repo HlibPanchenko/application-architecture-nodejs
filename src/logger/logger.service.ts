@@ -1,6 +1,11 @@
+import { injectable } from "inversify";
 import { Logger, ILogObj } from "tslog";
+import { ILogger } from "./logger.interface";
+import 'reflect-metadata'
 
-export class LoggerService {
+// injectable говорит, что этот класс можно положить в контейнер
+@injectable()
+export class LoggerService implements ILogger {
   public logger: Logger<ILogObj>; // тип
 
   constructor() {

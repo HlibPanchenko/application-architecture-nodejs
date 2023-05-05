@@ -26,16 +26,22 @@ export class UserController extends BaseController implements IUserController {
 				func: this.register,
 				middlewares: [new ValidateMiddleware(UserRegisterDto)],
 			},
-			{ path: '/login', method: 'post', func: this.login },
+			{
+				path: '/login',
+				method: 'post',
+				func: this.login,
+				middlewares: [new ValidateMiddleware(UserLoginDto)],
+			},
 		]);
 	}
 
-	login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction) {
+	async login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction) {
 		// мы бы помгли тут писать res.send, но будем использовать наши кастомые методы
-		//  this.ok(res, "login");
-		// имитируем ошибку
-		console.log(req.body);
-		next(new HTTPError(401, 'Ошибка авторизации'));
+		const result = await this.userService.validateUser(req.body);
+		if (!result) {
+			return next(new HTTPError(401, 'ошибка авторизации', 'login'));
+		}
+		this.ok(res, {});
 	}
 
 	async register(

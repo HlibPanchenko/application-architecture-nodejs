@@ -1,4 +1,4 @@
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 
 // Сделаем entity для User
 export class User {
@@ -6,7 +6,16 @@ export class User {
 	// мы не хотим хранить пароль в открытом виде в БД
 	private _password: string;
 
-	constructor(private readonly _email: string, private readonly _name: string) {}
+	// Конструрируем пользователя сразу с хешированным паролем
+	constructor(
+		private readonly _email: string,
+		private readonly _name: string,
+		passwordHash?: string,
+	) {
+		if (passwordHash) {
+			this._password = passwordHash;
+		}
+	}
 
 	get email(): string {
 		return this._email;
@@ -26,5 +35,11 @@ export class User {
 	public async setPassword(pass: string, salt: number): Promise<void> {
 		// второй параметр - соль
 		this._password = await hash(pass, salt);
+	}
+
+	public async comparePassword(pass: string): Promise<boolean> {
+		// сравниваем хеш и исходный парль
+		// функция compare с библиотеки bcryptjs
+		return compare(pass, this._password);
 	}
 }

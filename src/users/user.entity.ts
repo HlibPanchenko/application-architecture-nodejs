@@ -23,8 +23,8 @@ export class User {
 	// хешируем пароль
 	// не можем сделать сеттер, так как он не может быть асинхронным
 	// кладем уже захешированный пароль в нашего пользователя
-	public async setPassword(pass: string): Promise<void> {
+	public async setPassword(pass: string, salt: number): Promise<void> {
 		// второй параметр - соль
-		this._password = await hash(pass, 10);
+		this._password = await hash(pass, salt);
 	}
 }

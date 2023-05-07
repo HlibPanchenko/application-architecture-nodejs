@@ -49,4 +49,8 @@ export class UserService implements IUserService {
 		// сравниаем наш пароль (при логине) с паролем в бд (при регистрации)
 		return newUser.comparePassword(password);
 	}
+
+	async getUserInfo(email: string): Promise<UserModel | null> {
+		return this.usersRepository.find(email);
+	}
 }
